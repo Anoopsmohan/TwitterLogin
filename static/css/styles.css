@@ -26,10 +26,9 @@ body {
 
 .articleWrapper{
     width: 750px;
-    height: 600px;
+    height: 240px;
     padding: 20px;
     margin: 0px auto;
-    overflow: auto;
 }
 .articleWrapper .test{
     margin-bottom: 20px;
@@ -37,14 +36,7 @@ body {
     padding-bottom: 20px;
     position: relative;
 }
-.articleWrapper .removeX{
-    font-size: 20px;
-    color: red;
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    top:10px;
-}
+
 .footerWrap{
     font-size:12px;
     width: 200px;
@@ -58,4 +50,27 @@ body {
 
 .userDetails{
     padding: 25px;
+}
+
+.twitterWrapper{
+    width: 750px;
+    height: 390px;
+    padding: 20px;
+    margin: 0px auto;
+    overflow: auto;
+}
+
+.twitterWrapper .test{
+    margin-bottom: 20px;
+    border-bottom: 1px solid #CCC;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.btn-info {
+    margin-top: -33px;
+}
+
+.help-block {
+    width: 400px;
 }

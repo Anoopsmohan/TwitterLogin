@@ -1,6 +1,7 @@
 import logging
 import urlparse
 import urllib
+import simplejson
 import oauth2 as oauth
 
 from django.shortcuts import render
@@ -69,6 +70,14 @@ def login_authentication(request):
         profile.oauth_secret = access_token['oauth_token_secret']
         profile.save()
 
+    if user.userprofile.oauth_secret != access_token['oauth_token_secret']:
+        user.set_password(access_token['oauth_token_secret'])
+        user.save()
+
+        user_prof = UserProfile.objects.get(user=user)
+        user_prof.oauth_token = access_token['oauth_token']
+        user_prof.oauth_secret = access_token['oauth_token_secret']
+        user_prof.save()
     # Authenticate & login using django's built-in function
     user = authenticate(username=access_token['screen_name'],
                         password=access_token['oauth_token_secret'])
@@ -86,7 +95,6 @@ def twitter_logout(request):
 @csrf_exempt
 @jsonify
 def tweet_message(request):
-    print request.POST
     twitter_user = request.user.userprofile
 
     if not twitter_user.oauth_token:
@@ -101,9 +109,13 @@ def tweet_message(request):
     request_uri = 'https://api.twitter.com/1.1/statuses/update.json'
     response, content = client.request(request_uri, 'POST', urllib.urlencode(data))
     log.info('TWITTER MESSAGE POST RESPONSE: {}, CONTENT: {}'.format(response, content))
+    if response['status'] != '200':
+        return {}, 400
     return {}, 200
 
 
+@login_required
+@jsonify
 def recent_tweets(request):
     twitter_user = request.user.userprofile
 
@@ -115,9 +127,8 @@ def recent_tweets(request):
     token = oauth.Token(access_token, access_token_secret)
     client = oauth.Client(consumer, token)
 
-    data = {'count': 1}
     request_uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
     response, content = client.request(request_uri, 'GET')
-    log.info('TWITTER RECENT TWEETS RESPONSE:CONTENT: {}'.format(content))
-    return HttpResponseRedirect('/')
-
+    if response['status'] != '200':
+        return {}, 400
+    return simplejson.loads(content), 200
