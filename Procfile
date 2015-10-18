@@ -1,1 +1,1 @@
-web: gunicorn faststream.wsgi --log-file -
+web: gunicorn TwitterAuth.wsgi --log-file -
