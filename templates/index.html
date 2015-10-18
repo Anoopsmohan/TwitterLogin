@@ -22,6 +22,7 @@
             }
             var posting = $.post( url, { tweet: $('#tweet').val()} );
             posting.done(function( data ) {
+                $('#tweet').val('');
                 alert('successfully posted.');
             });
         });
@@ -34,7 +35,7 @@
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 {% endblock %}
 {% block content %}
-    <div style="text-align: center; padding: 100px">
+    <div style="text-align: center; padding: 50px 99px">
         {% if user.is_anonymous %}
             <!--<form method="get" action="{% url 'twitterapp_login' %}">-->
                 <!--<button type="submit">-->
