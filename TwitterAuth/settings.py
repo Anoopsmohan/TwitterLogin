@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&ejt_4&d0+duoe2048z5w@i-=0&$0vi%-8*w_)nuv0ry4(if+f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -154,3 +154,9 @@ STATICFILES_DIRS = (
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
+
+
+try:
+    from local_settings import *
+except:
+    pass
