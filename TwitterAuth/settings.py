@@ -143,3 +143,4 @@ LOGGING = {
         }
     },
 }
+#AUTH_PROFILE_MODULE = 'twitterapp.UserProfile'

@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
 
+{% block extra_js%}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.charactercounter.js"></script>
+
+<script>
+    $(function(){
+        $("#demo").characterCounter({
+            counterCssClass: 'help-block',
+            limit: 140
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+{% endblock %}
 {% block content %}
     <div style="text-align: center; padding: 100px">
         {% if user.is_anonymous %}
@@ -10,6 +29,10 @@
             <!--</form>-->
             <a href="{% url 'twitterapp_login' %}"><img src="{{ STATIC_URL }}img/twitter.png"/></a>
         {% else %}
+            <form>
+                <textarea rows="6" id="demo" class="form-control" style="width:500px;"></textarea>
+                <button type="submit" class="btn btn-info">Tweet</button>
+            </form>
 
         {% endif %}
     </div>

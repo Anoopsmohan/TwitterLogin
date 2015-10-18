@@ -1,5 +1,6 @@
 import logging
 import urlparse
+import urllib
 import oauth2 as oauth
 
 from django.shortcuts import render
@@ -76,4 +77,23 @@ def login_authentication(request):
 @login_required
 def twitter_logout(request):
     logout(request)
+    return HttpResponseRedirect('/')
+
+
+@login_required
+def tweet_message(request):
+    twitter_user = request.user.userprofile
+
+    if not twitter_user.oauth_token:
+        return HttpResponseRedirect('/')
+
+    access_token = twitter_user.oauth_token
+    access_token_secret = twitter_user.oauth_secret
+    token = oauth.Token(access_token, access_token_secret)
+    client = oauth.Client(consumer, token)
+
+    data = {'status': 'test tweet from new django project'}
+    request_uri = 'https://api.twitter.com/1.1/statuses/update.json'
+    response, content = client.request(request_uri, 'POST', urllib.urlencode(data))
+    log.info('TWITTER MESSAGE POST RESPONSE: {}, CONTENT: {}'.format(response, content))
     return HttpResponseRedirect('/')
