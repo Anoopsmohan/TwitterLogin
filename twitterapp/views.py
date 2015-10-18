@@ -9,7 +9,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
+from decorators import jsonify
 from TwitterAuth.constants import REQUEST_TOKEN_URL, AUTHORIZE_URL, ACCESS_TOKEN_URL
 from twitterapp.models import UserProfile
 
@@ -81,7 +83,10 @@ def twitter_logout(request):
 
 
 @login_required
+@csrf_exempt
+@jsonify
 def tweet_message(request):
+    print request.POST
     twitter_user = request.user.userprofile
 
     if not twitter_user.oauth_token:
@@ -92,8 +97,27 @@ def tweet_message(request):
     token = oauth.Token(access_token, access_token_secret)
     client = oauth.Client(consumer, token)
 
-    data = {'status': 'test tweet from new django project'}
+    data = {'status': request.POST.get('tweet')}
     request_uri = 'https://api.twitter.com/1.1/statuses/update.json'
     response, content = client.request(request_uri, 'POST', urllib.urlencode(data))
     log.info('TWITTER MESSAGE POST RESPONSE: {}, CONTENT: {}'.format(response, content))
+    return {}, 200
+
+
+def recent_tweets(request):
+    twitter_user = request.user.userprofile
+
+    if not twitter_user.oauth_token:
+        return HttpResponseRedirect('/')
+
+    access_token = twitter_user.oauth_token
+    access_token_secret = twitter_user.oauth_secret
+    token = oauth.Token(access_token, access_token_secret)
+    client = oauth.Client(consumer, token)
+
+    data = {'count': 1}
+    request_uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
+    response, content = client.request(request_uri, 'GET')
+    log.info('TWITTER RECENT TWEETS RESPONSE:CONTENT: {}'.format(content))
     return HttpResponseRedirect('/')
+

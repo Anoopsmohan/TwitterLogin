@@ -6,13 +6,27 @@
 
 <script>
     $(function(){
-        $("#demo").characterCounter({
+        $("#tweet").characterCounter({
             counterCssClass: 'help-block',
             limit: 140
         });
+
+        $("#formid").submit(function(event) {
+            event.preventDefault();
+            var $form = $(this),
+                    url = $form.attr('action');
+
+            if ($('#tweet').val() == ''){
+                alert('Please enter the message!');
+                return false;
+            }
+            var posting = $.post( url, { tweet: $('#tweet').val()} );
+            posting.done(function( data ) {
+                alert('successfully posted.');
+            });
+        });
     });
 </script>
-
 {% endblock %}
 
 {% block extra_css %}
@@ -29,12 +43,11 @@
             <!--</form>-->
             <a href="{% url 'twitterapp_login' %}"><img src="{{ STATIC_URL }}img/twitter.png"/></a>
         {% else %}
-            <form>
-                <textarea rows="6" id="demo" class="form-control" style="width:500px;"></textarea>
-                <button type="submit" class="btn btn-info">Tweet</button>
+            <form id="formid" action="/twitterapp/tweet-message/" method="post">
+                <textarea rows="4" id="tweet" class="form-control" style="width:500px;"></textarea>
+                <input type="submit" id="submitButton" name="submitButton" value="Tweet" class="btn btn-info">
             </form>
-
+            <!--<a href="{% url 'twitterapp_recent_tweets' %}">Recent Tweets</a>-->
         {% endif %}
     </div>
-    <!-- Twitter Box -->
 {% endblock %}
